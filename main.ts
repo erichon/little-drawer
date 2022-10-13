@@ -20,7 +20,7 @@ input.onButtonPressed(Button.A, function () {
     forward()
 })
 function backward () {
-    while (pins.analogReadPin(AnalogPin.P0) > 0.5) {
+    while (pins.digitalReadPin(DigitalPin.P8) == 1) {
         pins.digitalWritePin(DigitalPin.P0, 1)
         pins.digitalWritePin(DigitalPin.P1, 1)
     }
@@ -36,6 +36,17 @@ input.onButtonPressed(Button.AB, function () {
         `)
     stop()
 })
+radio.onReceivedString(function (receivedString) {
+    if (receivedString == "forward") {
+        forward()
+    }
+    if (receivedString == "backward") {
+        backward()
+    }
+    if (receivedString == "stop") {
+        stop()
+    }
+})
 input.onButtonPressed(Button.B, function () {
     basic.showLeds(`
         . . # . .
@@ -46,17 +57,6 @@ input.onButtonPressed(Button.B, function () {
         `)
     backward()
 })
-radio.onReceivedValue(function (name, value) {
-    if (name == "forward") {
-        forward()
-    }
-    if (name == "backward") {
-        backward()
-    }
-    if (name == "stop") {
-        stop()
-    }
-})
 function forward () {
     while (pins.analogReadPin(AnalogPin.P2) > 0.5) {
         pins.digitalWritePin(DigitalPin.P0, 0)
@@ -66,4 +66,3 @@ function forward () {
 }
 radio.setGroup(1)
 stop()
-led.enable(false)
